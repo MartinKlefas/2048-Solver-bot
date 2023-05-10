@@ -1,22 +1,9 @@
-#
-# CS1010FC --- Programming Methodology
-#
-# Mission N Solutions
-#
-# Note that written answers are commented out to allow us to run your
-# code easily while grading your problem set.
+
 
 import random
 import constants as c
 
-#######
-# Task 1a #
-#######
 
-# [Marking Scheme]
-# Points to note:
-# Matrix elements must be equal but not identical
-# 1 mark for creating the correct matrix
 
 def new_game(n):
     matrix = []
@@ -26,14 +13,7 @@ def new_game(n):
     matrix = add_two(matrix)
     return matrix
 
-###########
-# Task 1b #
-###########
 
-# [Marking Scheme]
-# Points to note:
-# Must ensure that it is created on a zero entry
-# 1 mark for creating the correct loop
 
 def add_two(mat):
     a = random.randint(0, len(mat)-1)
@@ -44,17 +24,7 @@ def add_two(mat):
     mat[a][b] = 2
     return mat
 
-###########
-# Task 1c #
-###########
 
-# [Marking Scheme]
-# Points to note:
-# Matrix elements must be equal but not identical
-# 0 marks for completely wrong solutions
-# 1 mark for getting only one condition correct
-# 2 marks for getting two of the three conditions
-# 3 marks for correct checking
 
 def game_state(mat):
     # check for win cell
@@ -82,15 +52,8 @@ def game_state(mat):
             return 'not over'
     return 'lose'
 
-###########
-# Task 2a #
-###########
 
-# [Marking Scheme]
-# Points to note:
-# 0 marks for completely incorrect solutions
-# 1 mark for solutions that show general understanding
-# 2 marks for correct solutions that work for all sizes of matrices
+
 
 def reverse(mat):
     new = []
@@ -100,15 +63,7 @@ def reverse(mat):
             new[i].append(mat[i][len(mat[0])-j-1])
     return new
 
-###########
-# Task 2b #
-###########
 
-# [Marking Scheme]
-# Points to note:
-# 0 marks for completely incorrect solutions
-# 1 mark for solutions that show general understanding
-# 2 marks for correct solutions that work for all sizes of matrices
 
 def transpose(mat):
     new = []
@@ -118,18 +73,7 @@ def transpose(mat):
             new[i].append(mat[j][i])
     return new
 
-##########
-# Task 3 #
-##########
 
-# [Marking Scheme]
-# Points to note:
-# The way to do movement is compress -> merge -> compress again
-# Basically if they can solve one side, and use transpose and reverse correctly they should
-# be able to solve the entire thing just by flipping the matrix around
-# No idea how to grade this one at the moment. I have it pegged to 8 (which gives you like,
-# 2 per up/down/left/right?) But if you get one correct likely to get all correct so...
-# Check the down one. Reverse/transpose if ordered wrongly will give you wrong result.
 
 def cover_up(mat):
     new = []
@@ -159,7 +103,7 @@ def merge(mat, done):
     return mat, done
 
 def up(game):
-    print("up")
+    
     # return matrix after shifting up
     game = transpose(game)
     game, done = cover_up(game)
@@ -169,7 +113,7 @@ def up(game):
     return game, done
 
 def down(game):
-    print("down")
+    
     # return matrix after shifting down
     game = reverse(transpose(game))
     game, done = cover_up(game)
@@ -179,7 +123,6 @@ def down(game):
     return game, done
 
 def left(game):
-    print("left")
     # return matrix after shifting left
     game, done = cover_up(game)
     game, done = merge(game, done)
@@ -187,7 +130,6 @@ def left(game):
     return game, done
 
 def right(game):
-    print("right")
     # return matrix after shifting right
     game = reverse(game)
     game, done = cover_up(game)
@@ -195,3 +137,11 @@ def right(game):
     game = cover_up(game)[0]
     game = reverse(game)
     return game, done
+
+def score(mat):
+    score = 0
+    for list in mat:
+        for element in list:
+            score += element
+    
+    return score
