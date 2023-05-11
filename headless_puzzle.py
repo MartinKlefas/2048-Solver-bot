@@ -22,3 +22,6 @@ def move(direction : int, gameMatrix):
     gameMatrix = logic.add_two(gameMatrix)
 
     return gameMatrix, logic.game_state(gameMatrix), logic.score(gameMatrix)
+
+def toList(gameMatrix):
+    return [item for sublist in gameMatrix for item in sublist]
