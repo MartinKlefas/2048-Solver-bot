@@ -10,7 +10,7 @@ while KeepPlaying:
     turns += 1
     nextDirection = random.randint(0,3)
     Matrix, gameState, score = headless_puzzle.move(nextDirection, Matrix)
-    print(f"turn {turns}, score {score}")
+    #print(f"turn {turns}, score {score}")
     if gameState != 'not over':
         KeepPlaying = False
 
