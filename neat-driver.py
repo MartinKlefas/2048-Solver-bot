@@ -13,6 +13,7 @@ def remove(index):
 def eval_genomes(genomes, config):
     global players, ge, nets, generation_number
     generation_number +=1
+    print(f"Generation: {generation_number}")
     players = []
     ge = []  # genome of each game player
     nets = [] # neural network of the player
@@ -39,7 +40,7 @@ def eval_genomes(genomes, config):
             
             if state != "not over":
                 dead +=1
-                print(f"{generation_number}, {dead}, {score}")
+                log_line(f"{generation_number}, {dead}, {score}")
                 ge[i].fitness = score
                 remove(i)
 
@@ -65,10 +66,18 @@ def run(config_path):
     pop = neat.Population(config)
     pop.run(eval_genomes, 5000)
 
+def log_line(text: str):
+    with open('log.csv', 'a') as the_file:
+        the_file.write(f"{text}\n")
+
+def init_log():
+    with open("log.csv","w") as the_file:
+        the_file.write("Generation, Player, Score\n")
 
 if __name__ == '__main__':
-    print("Generation, Player, score")
+    init_log()
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config.txt')
     run(config_path)
-    
+
+

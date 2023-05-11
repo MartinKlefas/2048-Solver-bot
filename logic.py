@@ -17,15 +17,11 @@ def new_game(n):
 
 def add_two(mat):
     if empty_cells(mat): # if there's space, put in a 2
-        a = random.randint(0, len(mat)-1)
-        b = random.randint(0, len(mat)-1)
-        while mat[a][b] != 0:
-            a = random.randint(0, len(mat)-1)
-            b = random.randint(0, len(mat)-1)
-        mat[a][b] = 2
-
+        zero_positions = [(i, j) for i, row in enumerate(mat) for j, element in enumerate(row) if element == 0]
+        zero_position = random.choice(zero_positions)
+        mat[zero_position[0]][zero_position[1]] = 2
+        
     #otherwise, just return the old matrix
-    
     return mat
 
 def empty_cells(mat):
