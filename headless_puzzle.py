@@ -17,11 +17,11 @@ commands = {
             3: logic.right,
 }
 
-def move(direction : int, gameMatrix):
+def move(direction : int, gameMatrix,dumbPlayer : bool = False):
     gameMatrix, done = commands[direction](game=gameMatrix)
     gameMatrix = logic.add_two(gameMatrix)
 
-    return gameMatrix, logic.game_state(gameMatrix), logic.score(gameMatrix)
+    return gameMatrix, logic.game_state(gameMatrix,dumbPlayer=dumbPlayer), logic.score(gameMatrix)
 
 def toList(gameMatrix):
     return [item for sublist in gameMatrix for item in sublist]

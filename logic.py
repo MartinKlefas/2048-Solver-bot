@@ -31,30 +31,33 @@ def add_two(mat):
 def empty_cells(mat):
     return any(0 in sublist for sublist in mat)
 
-def game_state(mat):
+def game_state(mat, dumbPlayer: bool = False):
     # check for win cell
-    for i in range(len(mat)):
-        for j in range(len(mat[0])):
-            if mat[i][j] == 2048:
-                return 'win'
+    if any(2048 in sublist for sublist in mat):
+        return 'win'
     # check for any zero entries
-    for i in range(len(mat)):
-        for j in range(len(mat[0])):
-            if mat[i][j] == 0:
+    if empty_cells(mat):
+        return 'not over'
+    
+    if not dumbPlayer: # using neat, the player can be so stupid that they don't see two touching blocks and end up having "not really lost" 
+                       # - but being too dumb to know it and still mashing the down arrow... endlessly... never dying, but never winning either.
+                       # if we just assume that a "dumb" neat player is dead as soon as there's no "0" cells on the board then this stalemate won't happen
+                    
+        # check for same values in cells that touch each other
+        for i in range(len(mat)-1):
+            # intentionally reduced to check the row on the right and below
+            # more elegant to use exceptions but most likely this will be their solution
+            for j in range(len(mat[0])-1):
+                if mat[i][j] == mat[i+1][j] or mat[i][j+1] == mat[i][j]:
+                    return 'not over'
+        for k in range(len(mat)-1):  # to check the left/right entries on the last row
+            if mat[len(mat)-1][k] == mat[len(mat)-1][k+1]:
                 return 'not over'
-    # check for same cells that touch each other
-    for i in range(len(mat)-1):
-        # intentionally reduced to check the row on the right and below
-        # more elegant to use exceptions but most likely this will be their solution
-        for j in range(len(mat[0])-1):
-            if mat[i][j] == mat[i+1][j] or mat[i][j+1] == mat[i][j]:
+        for j in range(len(mat)-1):  # check up/down entries on last column
+            if mat[j][len(mat)-1] == mat[j+1][len(mat)-1]:
                 return 'not over'
-    for k in range(len(mat)-1):  # to check the left/right entries on the last row
-        if mat[len(mat)-1][k] == mat[len(mat)-1][k+1]:
-            return 'not over'
-    for j in range(len(mat)-1):  # check up/down entries on last column
-        if mat[j][len(mat)-1] == mat[j+1][len(mat)-1]:
-            return 'not over'
+            
+    
     return 'lose'
 
 
