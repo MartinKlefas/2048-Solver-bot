@@ -16,15 +16,20 @@ def new_game(n):
 
 
 def add_two(mat):
-    a = random.randint(0, len(mat)-1)
-    b = random.randint(0, len(mat)-1)
-    while mat[a][b] != 0:
+    if empty_cells(mat): # if there's space, put in a 2
         a = random.randint(0, len(mat)-1)
         b = random.randint(0, len(mat)-1)
-    mat[a][b] = 2
+        while mat[a][b] != 0:
+            a = random.randint(0, len(mat)-1)
+            b = random.randint(0, len(mat)-1)
+        mat[a][b] = 2
+
+    #otherwise, just return the old matrix
+    
     return mat
 
-
+def empty_cells(mat):
+    return any(0 in sublist for sublist in mat)
 
 def game_state(mat):
     # check for win cell
