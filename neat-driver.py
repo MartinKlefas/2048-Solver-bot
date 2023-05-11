@@ -13,7 +13,6 @@ def remove(index):
 def eval_genomes(genomes, config):
     global players, ge, nets, generation_number
     generation_number +=1
-    #print(f"Generation Number: {generation_number}")
     players = []
     ge = []  # genome of each game player
     nets = [] # neural network of the player
@@ -41,7 +40,6 @@ def eval_genomes(genomes, config):
             if state != "not over":
                 dead +=1
                 print(f"{generation_number}, {dead}, {score}")
-                #print(f"Player {dead} died.")
                 ge[i].fitness = score
                 remove(i)
 
