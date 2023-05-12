@@ -162,3 +162,5 @@ cython_debug/
 #turn log for debugging
 log.csv
 ~*
+
+test.ipynb

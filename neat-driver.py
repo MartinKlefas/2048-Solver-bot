@@ -48,9 +48,6 @@ def eval_genomes(genomes, config):
 
 
 
-
-
-
 # Setup the NEAT Neural Network
 def run(config_path):
     global pop, generation_number
