@@ -47,6 +47,8 @@ def play_full_game(config, generation_number, genomes):
     #we can use a score history to check for a stalemate, and thereby pretend the players are not "dumb" anymore
     for genome_id, genome in genomes:
         player = headless_puzzle.init()
+        turnBefore = player
+        direction = 0
         scoreHistory = None
         scoreHistory = deque(maxlen=50)  
         net = neat.nn.FeedForwardNetwork.create(genome, config)
@@ -54,12 +56,17 @@ def play_full_game(config, generation_number, genomes):
         
         while True:
             turns += 1
-            output = net.activate(headless_puzzle.toList(player))
+            inputsToNet = headless_puzzle.toList(player)
+            inputsToNet.append(direction) # add in the last move
+            inputsToNet.extend(headless_puzzle.toList(turnBefore))
+
+            turnBefore = player
+
+            output = net.activate(inputsToNet)
             direction = math.floor(abs(output[0]) * (4 - 1e-10))
             player, state, score = headless_puzzle.move(direction,player,dumbPlayer=False)
             scoreHistory.append(score)
-            #print(f"stat: {state}")
-            #print(f"turns {turns}")
+
             if state != "not over" or (turns > 50 and len(set(scoreHistory)) == 1): # if the last 50 scores are the same, we've hit a stalemate.
                 resultsTxt.append(f"{generation_number}, {genome_id}, {score}, {turns}")
                 resultsTuples.append((genome_id, score))
@@ -88,9 +95,8 @@ def run(config_path):
         neat.DefaultStagnation,
         config_path
     )
-    print("Creating population")
+
     pop = neat.Population(config)
-    print("starting run")
     pop.run(eval_genomes, 5000)
 
 
@@ -105,6 +111,6 @@ def init_log():
 if __name__ == '__main__':
     init_log()
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config.txt')
+    config_path = os.path.join(local_dir, 'config-longmem.txt')
     run(config_path)
     
