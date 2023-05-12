@@ -6,38 +6,45 @@ import neat
 import headless_puzzle
 from collections import deque
 from functools import partial
+from itertools import chain
 
 from concurrent.futures import ProcessPoolExecutor
 
 def eval_genomes(genomes, config):
-    global generation_number, dead
+    global generation_number
     generation_number +=1
     print(f"Generation Number: {generation_number}")
-    
-    
-    dead = 0
-    
-    ge = []
-    for genome in genomes:
-        ge.append(genome)
 
+    
     func = partial(play_full_game, config, generation_number)
 
-    chunks = list(chunkify(ge, len(ge) // 5))
-   
-
-
-
+    chunks = list(chunkify(genomes, len(genomes) // 10))
+  
     with ProcessPoolExecutor() as executor:
-        results_list = executor.map(func, chunks)
+        resultsList = list(executor.map(func, chunks))
 
-    write_log(results_list)
+
+    resultsTxt_lists = []
+    resultsTuples_lists = []
+    for item in resultsList:
+        resultsTxt_lists.append(item[0])
+        resultsTuples_lists.append(item[1])
+
+
+    log_lines(list(chain.from_iterable(resultsTxt_lists)))
     
+    resultsTuples = list(chain.from_iterable(resultsTuples_lists))
+
+    genomeDict = dict(genomes)
+
+    for key, value in resultsTuples:
+        genomeDict[key].fitness = value
+
     print("got here")
 
 def play_full_game(config, generation_number, genomes):
-    results = []
-    
+    resultsTxt = []
+    resultsTuples = []
     #we can use a score history to check for a stalemate, and thereby pretend the players are not "dumb" anymore
     for genome_id, genome in genomes:
         player = headless_puzzle.init()
@@ -55,11 +62,11 @@ def play_full_game(config, generation_number, genomes):
             #print(f"stat: {state}")
             #print(f"turns {turns}")
             if state != "not over" or (turns > 50 and len(set(scoreHistory)) == 1): # if the last 50 scores are the same, we've hit a stalemate.
-                results.append(f"{generation_number}, {genome_id}, {score}, {turns}")
-                genome.fitness = score
+                resultsTxt.append(f"{generation_number}, {genome_id}, {score}, {turns}")
+                resultsTuples.append((genome_id, score))
                 break
 
-    return results
+    return  (resultsTxt, resultsTuples)
 
 
 def chunkify(lst, n):
@@ -87,9 +94,9 @@ def run(config_path):
     pop.run(eval_genomes, 5000)
 
 
-def log_line(text: str):
+def log_lines(text: list):
     with open('log.csv', 'a') as the_file:
-        the_file.write(f"{text}\n")
+        the_file.writelines(f"{item}\n" for item in text)
 
 def init_log():
     with open("log.csv","w") as the_file:
